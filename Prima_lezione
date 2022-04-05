@@ -277,11 +277,42 @@ print("Il seno dell'angolo " + str(a) + " è " + str(s))
 Il seno dell'angolo 3.141592... è 0
 >>>
 
+#-----Conversione di angoli-----
+# da gradi in radianti
+
+from math import *
+
+# dichiaro la variabile angolo
+angolo = 180
+
+# dichiaro un'altra variabile a cui associo la funzione radians che serve per convertire in rad
+# radians è un metodo di math
+ang_rad =  radians(angolo)
+
+print(ang_rad)
+>>>
+3.141592...
+>>>
+
+print("L'angolo {}° vale {} in radianti".format(angolo, ang_rad))
+>>>
+L'angolo 180° vale 3.141592653589793 in radianti
+>>>
 
 
+# da radianti in gradi
 
+radianti = pi   # è 180° in radianti
+ang_grad = degrees(radianti)   # degrees è la funzione che converte da rad in gradi
+print(int(ang_grad))
+>>>
+180
+>>>
 
-
+print("L'angolo {} in radianti vale {}°".format(radianti, int(ang_grad)))
+>>>
+L'angolo 3.141592653589793 in radianti vale 180°
+>>>
 
 
 
