@@ -1,4 +1,226 @@
 # First steps with Python 
 
-# so il comando print per portare in output (stampare nella shell) un determinato contenuto
+# il comando print per portare in output (stampare nella shell) un determinato contenuto. In questo caso è una stringa, perché tra apici.
+# il comando è lanciabile direttamente dalla Shell
 print('Hello World')
+
+# per commentare più righe insieme, ed isolare quindi il codice (cioè non farlo eseguire) si possono usare ad inizio e finire delle righe tre apici '''
+''' print('ciao')
+print('come va?')
+print('bene')'''
+
+# isolare il codice è importante perché ogni print lasciato libero viene eseguito da Python
+
+# ---dichiaro tre variabili---
+name = 'chiara' # alla variabile name assegno la stringa 'chiara'
+num = 23 # alla variabile num assegno il numero intero 23
+voto = 23.5 # alla variabile voto assegno il float 23.5 (numero con la virgola)
+
+# finché non lancio il comando print, in output non vedo nulla
+# per visualizzare in output le varibili utilizzo print
+print(name)
+print(num)
+print(voto)
+
+# mi restituisce su tre righe l'output seguente:
+>>>
+chiara
+23
+23.5
+>>>
+
+# se voglio stampare tutti i valori sulla stessa riga
+print (name, num, voto)
+
+# il risultato sarà:
+>>>
+chiara 23 23.5
+>>>
+
+# per conoscere il tipo di dato che ho inserito in una variabile, inserisco all'interno di print il comando type
+print(type(name))
+print(type(num))
+print(type(voto))
+
+>>>
+<class 'str'>
+<class 'int'>
+<class 'float'>
+>>>
+
+# ---cambiare la tipologia di dato---
+# da intero a stringa (da stringa a intero non si può fare)
+
+# assegno il numero intero 27 alla variabile num
+num = 27
+
+# con il comando str trasformo il numero in stringa, e lo associo ad un'altra variabile che chiamo num_str
+num_str = str(num)
+
+print(type(num))
+print(type(num_str))
+
+>>>
+<class 'int'>
+<class 'str'>
+>>>
+
+
+print(num) # ottengo come risultato 27, tipo numero intero
+print(num_str) # ottengo come risultato sempre 27, ma in questo caso è una stringa
+
+>>>
+27
+27
+>>>
+
+print(num, type(num))
+print(num_str, type(num_str))
+
+>>>
+27 <class 'int'>
+27 <class 'str'>
+>>>
+
+
+# ---operazioni matematiche---
+# possono essere eseguite direttamente dalla shell
+# +, -, *, /, //, % 
+
+>>>2+2
+4
+
+
+# assegno dei numeri interi a delle variabili
+x = 8
+y = 2
+z = 3
+
+# per fare la somma utilizzo l'operatore +. Poi associo x+y alla variabile somma
+# stessa cosa per le altre operazioni
+somma = x + y
+sott = x - y
+molt = x * y
+div = x / z
+div_int = x // z
+resto = x % z
+
+# in base a quello che ho scritto, ho creato 9 variabili (x, y, z, somma, sott, molt, div, div_int, resto) 
+
+print(somma, sott, molt, div, div_int, resto)
+
+>>>
+10 6 16 2.666666666666665 2 2
+>>>
+
+
+# ---Operazioni con stringhe---
+# assegno una stringa rispettivamente alle variabili a e b
+a = 'Supercalifragilisti'
+b = 'chespiralidoso'
+
+# con l'operatore + posso concatenare le stringhe
+c = a + b
+
+print(c)
+>>>
+Supercalifragilistichespiralidoso
+>>>
+
+#per scrivere le stringhe staccate devo inserire uno spazio all'interno di una stringa
+a = 'Supercalifragilisti '
+b = 'chespiralidoso'
+
+print(c)
+>>>
+Supercalifragilisti chespiralidoso
+>>>
+
+# moltiplicazione
+# l'operatore * ripete la stringa in una variabile
+d = 'ciao '
+d2 = d*2
+d3 = d*3
+
+print(d2)
+print(d3)
+
+>>>
+ciao ciao
+ciao ciao ciao
+>>>
+
+#-------------
+
+frase1 = 'andale'  # alla variabile frase1 è assegnata la stringa 'andale'
+frase2 = 'ariba'  # alla varaibile frase2 è assegnata la stringa 'ariba'
+
+# voglio stampre 'andaleandalearibaariba'
+# creo la varaibile frase_finale
+
+frase_finale = (frase1*2) + (frase2*2)
+print(frase_finale)
+
+>>>
+andaleandalearibaariba
+>>>
+
+# stampo il tipo della frase_finale e la sua lunghezza della stringa in caratteri con il comando len
+print(type(frase_finale), len(frase_finale))
+
+>>>
+<class 'str'> 22
+>>>
+
+# non posso concatenare stringhe e valori numerici insieme, a meno che non cambio il tipo del dato
+
+
+# -----Assegnazione di una variabile tramite input-----
+
+# inserisco un input dentro la variabile name 
+name = input()
+
+# con print stampo l'input assegnato
+print(name)
+
+# a questo punto nella shell posso scrivere l'input che voglio, ad es. ciao. 
+# click su invio e sotto mi stampa ciao
+
+>>>
+ciao  # input che scrivo
+ciao  # risultato dopo aver cliccato invio
+>>>
+
+# dentro il comando di input posso inserire un comando-guida
+name = input('Inserisci il tuo nome: ')
+print(name)
+
+# nella shell mi esce >>>Inserisci il tuo nome:
+# lì inserisco il nome e clicco invio
+
+>>> 
+Inserisci il tuo nome: Chiara   # Chiara è ciò che scrivo io come input nella shell
+Chiara   # Chiara è il risultato del print dopo aver cliccato invio
+>>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
