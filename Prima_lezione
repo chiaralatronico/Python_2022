@@ -127,7 +127,7 @@ print(c)
 Supercalifragilistichespiralidoso
 >>>
 
-#per scrivere le stringhe staccate devo inserire uno spazio all'interno di una stringa
+# per scrivere le stringhe staccate devo inserire uno spazio all'interno di una stringa
 a = 'Supercalifragilisti '
 b = 'chespiralidoso'
 
@@ -203,13 +203,79 @@ Inserisci il tuo nome: Chiara   # Chiara è ciò che scrivo io come input nella 
 Chiara   # Chiara è il risultato del print dopo aver cliccato invio
 >>>
 
+name = input('Inserisci il tuo nome: ')
+print('Il mio nome è ' + name)
 
+>>> 
+Inserisci il tuo nome: Chiara  
+Il mio nome è Chiara  
+>>>
 
+# invece della concatenazione utilizzo la notazione format
 
+name = input('Inserisci il tuo nome: ')
+print('Il mio nome è {}'.format(name))
 
+>>> 
+Inserisci il tuo nome: Chiara  
+Il mio nome è Chiara  
+>>>
 
+#-----Modulo Math-----
 
+# Il modulo va importato. Tutti i moduli vanno importati all'inizio del codice
+import math  
 
+# per stampare ad es. il valore di pigreco (pi) devo richiamare il modulo math prima del metodo che sto utilizzado, cioè pigreco
+# sui link trovo quali sono le diciture dei metodi (pi=pigreco)
+print(math.pi)
+
+>>>
+3.14159265...
+>>>
+
+# per evitare di richiamare ogni volta il modulo math posso utilizzare la seguente dicitura
+
+from math import pi   # così importo solo il metodo pi, cioè pigreco
+print(pi)
+>>>
+3.14159265...
+>>>
+
+# se mi serve il seno o la radice quadrata o alti valori uso *
+# con * importo tutti i metodi all'interno del modulo math
+
+from math import *
+print(pi)
+print(sqrt(25))   # sqrt è la radice quadrata
+>>>
+3.14159265...
+5
+>>>
+
+# math restituisce tutti i valori in radianti e non in gradi
+# è preferibile passare un valore in radianti ai vari metodi
+
+# voglio calcolare il seno di 90°, che in rad corrisponde a pigreco/2
+a = pi/2
+s = int(sin(a))  # specifico int per ottenere solo la parte di numero intero e non 1.0...
+print(s)
+>>>
+1
+>>>
+
+a = pi  #180° in radianti
+s = int(sin(a))
+print("Il seno dell'angolo {} è {}".format(a, int(s)))
+>>>
+Il seno dell'angolo 3.141592... è 0
+>>>
+
+# con la concatenazione
+print("Il seno dell'angolo " + str(a) + " è " + str(s))
+>>>
+Il seno dell'angolo 3.141592... è 0
+>>>
 
 
 
