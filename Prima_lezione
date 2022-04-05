@@ -1,0 +1,4 @@
+# First steps with Python 
+
+# so il comando print per portare in output (stampare nella shell) un determinato contenuto
+print('Hello World')
