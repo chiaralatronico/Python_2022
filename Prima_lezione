@@ -3,6 +3,9 @@
 # il comando print per portare in output (stampare nella shell) un determinato contenuto. In questo caso è una stringa, perché tra apici.
 # il comando è lanciabile direttamente dalla Shell
 print('Hello World')
+>>>
+Hello World
+>>>
 
 # per commentare più righe insieme, ed isolare quindi il codice (cioè non farlo eseguire) si possono usare ad inizio e finire delle righe tre apici '''
 ''' print('ciao')
