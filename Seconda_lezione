@@ -1,0 +1,50 @@
+# ----------Le funzioni----------
+
+# La funzione viene definita dalla parola chiave def ( )
+
+# ---blocco delle funzioni---
+# x e y sono le variabili locali (parametri), valide solamente all'interno del blocco della funzione
+# anche s è una variabile a cui attribuisco la somma di due parametri 
+
+def somma(x, y):          
+    s = x + y
+    return s    
+
+# ---main--- (corpo dello script)
+# primo_num e secondo_num sono variabili globali e sono valide in tutto lo script 
+# quando richiamo la funzione, richiamo il nome che le ho attribuito (somma) e le variabili globali dichiarate
+
+primo_num = 3
+secondo_num = 2
+print(somma(primo_num, secondo_num))
+>>>
+5
+>>>
+
+#----------
+
+# return permette di portare in output il valore della variabile locale. La restituisce ma non la stampa. 
+# se uso return devo mettere print quando richiamo la funzione. 
+
+# al posto di return posso usare direttamente print (che stampa)
+# in questo caso quando richiamo la funzione, non devo rimettere print
+
+def somma(x, y):          
+    s = x + y
+    print(s)  
+    
+# ---main---
+
+primo_num = 3
+secondo_num = 2
+somma(primo_num, secondo_num)
+>>>
+5
+>>>
+    
+    
+    
+    
+    
+    
+
