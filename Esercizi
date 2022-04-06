@@ -1,0 +1,16 @@
+# Esercizio 1: Scrivi una funzione che prende come parametro la temperatura in gradi Celsius e la trasforma in gradi Fahrenheit.
+# Cercare su internet come si calcola la conversione da Celsius a Fahrenheit.
+
+def conversione(x):
+    risultato = (x * 9/5) + 32
+    return risultato
+
+#---main---
+
+c = 3
+print(conversione(c))
+print("{} gradi Celsius equivalgono a {} gradi Fahrenheit".format(c, conversione(c))) 
+>>>
+37.4
+3 gradi Celsius equivalgono a 37.4 gradi Fahrenheit
+>>>
