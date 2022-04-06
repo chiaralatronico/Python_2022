@@ -1,16 +1,54 @@
 # ----------Le funzioni----------
 
-# La funzione viene definita dalla parola chiave def ( )
+# La funzione viene definita dalla parola chiave def 
+# dentro la funzione vanno messe solo le variabili e non i numeri
+# quando metto i due punti la funzione va a capo automatico con indentazione 
 
 # ---blocco delle funzioni---
+
+def nome_della_funzione(par1, par2):
+    var = par1 + par2
+    return var
+    
+# ---main---(corpo dello script)
+a = 3
+b = 4
+print(nome_della_funzione(a,b))
+>>>
+7
+>>>
+
+# return permette di portare in output il valore della variabile locale. La restituisce ma non la stampa. 
+# se uso return devo mettere print quando richiamo la funzione. 
+
+#-------oppure
+
+# al posto di return posso usare direttamente print (che stampa)
+# in questo caso quando richiamo la funzione, non devo rimettere print
+
+# ---blocco delle funzioni---
+
+def nome_della_funzione(par1, par2):
+    var = par1 + par2
+    print(var)
+    
+# ---main---(corpo dello script)
+a = 3
+b = 4
+(nome_della_funzione(a,b))
+>>>
+7
+>>>
+
+#-----------
+
 # x e y sono le variabili locali (parametri), valide solamente all'interno del blocco della funzione
 # anche s è una variabile a cui attribuisco la somma di due parametri 
 
-def somma(x, y):          
+def somma(x, y):              
     s = x + y
     return s    
 
-# ---main--- (corpo dello script)
 # primo_num e secondo_num sono variabili globali e sono valide in tutto lo script 
 # quando richiamo la funzione, richiamo il nome che le ho attribuito (somma) e le variabili globali dichiarate
 
@@ -21,26 +59,209 @@ print(somma(primo_num, secondo_num))
 5
 >>>
 
+print('{} + {} = {}'.format(primo_num, secondo_num, somma(primo_num, secondo_num)))
+>>>
+3 + 2 = 5
+>>>
+
 #----------
 
-# return permette di portare in output il valore della variabile locale. La restituisce ma non la stampa. 
-# se uso return devo mettere print quando richiamo la funzione. 
+# Definisco la funzione area che prende come parametro le variabili base e altezza
+# la funzione deve restituire l'area del rettangolo
 
-# al posto di return posso usare direttamente print (che stampa)
-# in questo caso quando richiamo la funzione, non devo rimettere print
+def area(base, altezza):
+    a = base * altezza
+    return a
 
-def somma(x, y):          
-    s = x + y
-    print(s)  
+#---main
+
+x = 5
+y = 10
+print(area(x, y))
+print("L'area del rettangolo è {}".format(area(x, y)))
+>>>
+50
+L'area del rettangolo è 50
+>>>
+
+#----------
+
+# Calcolo l'area del cerchio
+
+from math import *
+def area_cerchio(raggio):    # dentro la funzione devono starci solo le variabili (quindi il raggio) e non i numeri come pigreco
+    a = pi * (raggio**2)
+    return a
     
+#---main
+
+r = 10
+print(area_cerchio(r))
+>>>
+314.1592653589793
+>>>
+
+print("L'area del cerchio è {}".format(area_cerchio(r)))
+>>>
+L'area del cerchio è 314.1592653589793
+>>>
+
+print("({}**2)* pi = {}".format(r, area_cerchio(r)))
+>>>
+(10**2)* pi = 314.1592653589793
+>>>
+
+
+# ----------Esecuzione condizionale----------
+
+# definisco una variabile num_mag (numero maggiore) a cui sono associati i parametri a e b
+# se a è maggiore di b restituisce il valore di a
+# altrimenti se b è maggiore di a restituisce il valore di b
+# altrimenti se a e b sono uguali restituisce False
+
+def num_max(a, b):            
+    if a > b:
+       return a
+    elif b > a:
+       return b 
+    elif a == b:    # al posto di elif posso usare anche else:
+       return False
+       
 # ---main---
 
-primo_num = 3
-secondo_num = 2
-somma(primo_num, secondo_num)
+num1 = 2
+num2 = 3
+
+print(num_max(num1, num2))
+>>>
+3
+>>>
+
+
+#-----Valutare se una funzione è pari o dispari-----
+# il modulo % mi dice il resto di una divisione, quindi se un numero è pari o dispari
+
+def pari(n):
+    if n % 2 == 0:      
+       return True
+    elif n % 2 != 0:    # != sta per diverso
+       return False
+
+#---main---
+
+num1 = 26
+num2 = 35
+print(pari(num1), pari(num2)) 
+>>>
+True False
+>>>
+
+# la stessa condizione può essere scritta come:
+
+def pari(n):
+    if n % 2 == 0:      
+       return True
+    else:
+       return False
+       
+# oppure:
+
+def pari(n):
+    if n % 2 == 0:      
+       return True
+    return False   # tolgo else e scrivo return indentato con l'if
+
+
+#-----Valutare se un numero è compreso tra 0 e 10-----
+def compreso(n):
+    if n >= 0 and n <= 10:
+        return True
+    return False
+
+num1 = 2
+num2 = 11
+print(compreso(num1), compreso(num2)) 
+>>>
+True False
+>>>
+
+
+# ----------Iterazione e Ricorsione----------
+
+# L'ITERAZIONE è un loop che si ripete finché la condizione di controllo diventa falsa. 
+
+def conto_alla_rovescia_iter(n):
+    if n == 0:
+       print("Fine conto alla rovescia")
+    else:
+       print(n)
+       conto_alla_rovescia_iter(n-1)
+
+conto_alla_rovescia_iter(10)
+>>>
+10
+9
+8
+7
+6
+5
+4
+3
+2
+1
+Fine conto alla rovescia
+>>> 
+       
+# oppure si può specificare anche la variabile globale num
+
+def conto_alla_rovescia_iter(n):
+    if n == 0:
+       print("Fine conto alla rovescia")
+    else:
+       print(n)
+       conto_alla_rovescia_iter(n-1)
+       
+num = 10
+conto_alla_rovescia_iter(num)
+
+#--------------
+
+# La RICORSIONE è quando un'istruzione in una funzione è richiamata ripetutamente. 
+# L'algoritmo ricorsivo richiama se stesso fin quando la condizione è valida. 
+
+# Utilizza un ciclo while (finché).
+# Finché n > 0, mi stampa n. Poi sottrae ad n il suo valore meno 1
+# Finché questa condizione è valida va avanti.
+# Quando non è più valida la condizione (0 > 0), esce dal cilo while e stampa Fine conto alla rovescia
+
+def conto_alla_rovescia_ric(n):
+    while n > 0:
+        print(n)
+        n = n - 1  # si può scrivere anche n -= 1
+    print("Fine conto alla rovescia")
+
+num = 5
+conto_alla_rovescia_ric(5)
 >>>
 5
->>>
+4
+3
+2
+1
+Fine conto alla rovescia
+>>> 
+
+
+
+
+
+
+
+
+
+
+
+
     
     
     
