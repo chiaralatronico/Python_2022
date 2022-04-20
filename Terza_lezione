@@ -208,9 +208,7 @@ for row in table:
 
 header = ['id', 'coord_x', 'coord_y', 'h']
 
-# per non sovrascrivere il dato, creo una copia del file nella cartella out
-
-my_csv = open("C:/Lab2_Python/out/montecristo_point.csv", 'r')
+my_csv = open("C:/Lab2_Python/montecristo_point.csv", 'r')
 table = csv.reader(my_csv, delimiter = ',')
 
 # con il ciclo for leggo ogni riga della lista e la vado ad aggiungere ad una lista vuota
@@ -222,8 +220,24 @@ for row in table:
 print(List)
 
 
+# creo una nuova variabile per aprile il nuovo file in modalità scrittura (w sta per write)
+# per non sovrascrivere il dato, creo una cartella out dove vorrò il nuovo file
 
+out_csv = open("C:/Lab2_Python/out/montecristo_point_header.csv", 'w')
 
+# creo una nuova table con il metodo writer
+new_table = csv.writer(out_csv, delimiter = ',')
 
+# dentro new_table vado a scrivere la riga header
+new_table.writerow(header)
 
+# scrivo le altre righe del csv
+new_table.writerows(List)
 
+# alla fine vanno chiuse tutte le variabili che ho aperto
+my_csv.close()
+out_csv.close()
+
+# volendo posso chiedergli stamparmi quando ha fatto la copia...
+# se vado a vedere nella cartella trovo il file nuovo
+print("Done!")
