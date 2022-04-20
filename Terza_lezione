@@ -1,0 +1,229 @@
+# per stampare, tutti gli elementi di una lista uso il cico for
+
+lista = [2, 34, 67, 1, 16]
+
+for element in lista:
+    print(element)
+    
+>>>
+2
+34
+67
+1
+16
+>>>
+
+# stampare il cubo di tutti gli elementi della lista
+# creo la variabile cubo
+
+lista = [2, 34, 67, 1, 16]
+
+for element in lista:
+    cubo = element ** 3
+    print(cubo)
+
+>>>
+8
+39304
+300763
+1
+4096
+>>>
+
+# una funzione per contare quante volte un elemento compare in lista
+# la funzione avrà come parametro la lista e il numero
+# creo una variabile contatore che andrà ad incrementarsi ogni volta che il cico for trova un elemento corrispondente
+# per ogni elemento nella lista, se questo elemento è uguale al numero che chiediamo di controllare se è presente più volte, incremenenta il contatore
+# altrimenti pass. Quando esce dal ciclo (ha controllato tutti i numeri) ritorna quante volte il numero è presente nella lista (cioè il contatore)
+# la variabile contatore parte sempre da 0
+
+def conta_el(l, n): # parametro: lista, numero
+    c = 0 # contatore
+    for el in l:
+        if el == n:
+            c = c + 1 # incrementa il contatore
+        else:
+            pass
+    return c
+
+# main----
+
+lista = [2, 34, 67, 1, 16]
+num = 2
+print(conta_el(lista, num))
+
+>>>
+1
+>>>
+
+
+# con il comando input diventa:
+
+def conta_el(l, n): # parametro: lista, numero
+    c = 0 # contatore
+    for el in l:
+        if el == n:
+            c = c + 1 # incrementa il contatore
+        else:
+            pass
+    return c
+
+# main----
+
+lista = [2, 34, 67, 1, 16]
+num = int(input('cerca il numero: '))
+print(conta_el(lista, num))
+
+>>>
+1
+>>>
+
+#--------------------------------
+
+# il modulo Random permette di lavorare con numeri casuali
+# in una lista vuota con un range di 10 elementi voglio inserire dei numeri casuali da 0 a 500
+# per ogni elemento all'interno di un range di 10, assegno alla varaibile b dei valori da 0 a 500
+  e li appendo alla lista vuota L
+# quanto esce dal ciclo, cioè sono stati appesi 10 valori, mi stampa la lista
+
+from random import *
+def insert_random():
+    L = [] # dichiaro una lista vuota in cui 'appendere' dei valori 
+    for el in range(10):
+        b = randint(0, 500)
+        L.append(b)
+    print(L)
+    
+ insert_random()
+ 
+ >>>
+ [426, 367, 56, 52, 318, 333, 141, 135, 132, 150]
+ >>>
+ 
+#--------------------------------
+ 
+# importo il modulo csv
+import csv
+ 
+# devo indicare il percorso (come stringa) dove si trova il file csv
+# "C:/Lab2_Python/montecristo_point.csv"
+# uso la funzione open per aprilo
+# alla nuova variabile assegno il percorso e la modalità con cui viene letto. r sta per read, cioè in sola lettura
+ 
+my_csv = open("C:/Lab2_Python/montecristo_point.csv", 'r')
+
+print(my_csv)  # non apre il file, stampa una codifica
+
+# creo una variabile table e richiamo il nome del metodo del csv, quindi csv.reader
+  le assegno il nome del file da aprire (my_csv) e specifico il delimitatore ','
+  
+table = csv.reader(my_csv, delimiter = ',')
+
+print(table)  # mi dice che è un oggetto reader
+
+
+# come entro dentro il csv e stampo ogni riga? Con il cilo for
+# per ogni riga nella tabella, stampa la riga: tutte le righe del csv come fossero liste
+
+for row in table:
+    print(row)
+    
+>>>
+['1', '606879.926248845', '4688202.49859414', '165']
+['2', '607544.589320929', '4688664.52048571', '345']
+(...)
+['26', '608809.070287334', '4687246.03222212', '327']
+>>>
+
+# per specificare anche il tipo e poi la lista
+
+for row in table:
+    print(type(row), row)   
+
+>>>
+<class 'list'> ['1', '606879.926248845', '4688202.49859414', '165']
+>>>
+
+# le liste sono interrogabili
+# ad esempio se voglio sapere cosa c'è nella posizione 0 della lista, mi stampa 1° colonna
+
+for row in table:
+    print(row[0])
+>>>
+1
+2
+(...)
+26
+>>>
+
+#------
+
+# l'header è l'intestazione: id,coordx,coordy,h
+# inserisco manualmente l'header nel file csv
+
+# inserisco il metodo DictReader: vede la tabella come dizionario dove la chiave è l'header e i dati i valori
+table = csv.DictReader(my_csv, delimiter = ',')
+ 
+for row in table:
+    print(row)
+ 
+ >>>
+ OrderedDict([('1', '2'), ('606879.926248845', '607544.589320929'), ('4688202.49859414', '4688664.52048571'), ('165', '345')])
+ (...)
+ >>>
+ 
+ # siccome ora le righe vengono lette come dizionario, se voglio stampare un certo indice
+   devo specificare la chiave, ad es. la quota 'h'
+ 
+ for row in table:
+    print(row['h'])
+ 
+ >>>
+ 165
+ 345
+ 405
+ (...)
+ >>>
+ 
+# per stampare due valori
+
+ for row in table:
+    print(row['coordx'], row['coordy'])
+
+# poiché le intestazione dell'header sono diventate chiavi del dizionario, posso eseguire
+  delle operazioni, e quindi svincolo gli altri dati del csv dal tipo stringa
+# ad es: la coordinata x la moltiplico per 2
+# devo specificare che il numero contenuto nella chiave coordx è di tipo float!!! ( o se è intero, int)
+
+ for row in table:
+    a = float(row['coordx'])  
+    print(a * 2)
+
+#----
+
+# come si aggiunge una lista al file csv, come se aggiungessi una lista
+
+# creo la variabile header. I titoli devono essere passati come stringhe.
+  L'header è una lista di stringhe
+
+header = ['id', 'coord_x', 'coord_y', 'h']
+
+# per non sovrascrivere il dato, creo una copia del file nella cartella out
+
+my_csv = open("C:/Lab2_Python/out/montecristo_point.csv", 'r')
+table = csv.reader(my_csv, delimiter = ',')
+
+# con il ciclo for leggo ogni riga della lista e la vado ad aggiungere ad una lista vuota
+# in questo modo credo un'unica grande lista (lista di accumulo) che racchiude tutte le righe (row), ovvero altre liste
+
+List = []
+for row in table:
+    List.append(row)
+print(List)
+
+
+
+
+
+
+
