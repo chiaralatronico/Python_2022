@@ -115,7 +115,7 @@ def insert_random():
 
 import csv
  
-# serve indicare il percorso (stringa) dove si trova il file csv: "C:/Lab2_Python/montecristo_point.csv"
+# serve indicare il percorso dove si trova il file csv: "C:/Lab2_Python/montecristo_point.csv"
 # uso la funzione open per aprilo
 # alla nuova variabile assegno il percorso e la modalità con cui viene letto. 
   r sta per read, cioè in sola lettura
@@ -223,7 +223,8 @@ my_csv = open("C:/Lab2_Python/montecristo_point.csv", 'r')
 table = csv.reader(my_csv, delimiter = ',')
 
 # con il ciclo for leggo ogni riga della lista e la vado ad aggiungere ad una lista vuota
-# in questo modo credo un'unica grande lista (lista di accumulo) che racchiude tutte le righe (row), ovvero altre liste
+# in questo modo credo un'unica grande lista (lista di accumulo) che racchiude tutte le 
+  righe (row), ovvero altre liste
 
 List = []
 for row in table:
