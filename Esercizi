@@ -1,16 +1,166 @@
-# Esercizio 1: Scrivi una funzione che prende come parametro la temperatura in gradi Celsius e la trasforma in gradi Fahrenheit.
+# Esercizio 1: Scrivi una funzione che prende come parametro la temperatura in gradi Celsius 
+  e la trasforma in gradi Fahrenheit.
 # Cercare su internet come si calcola la conversione da Celsius a Fahrenheit.
 
 def conversione(x):
     risultato = (x * 9/5) + 32
     return risultato
 
-#---main---
+# ---main---
 
 c = 3
 print(conversione(c))
-print("{} gradi Celsius equivalgono a {} gradi Fahrenheit".format(c, conversione(c))) 
+print("{} gradi Celsius equivalgono a {} gradi Fahrenheit".format(c, conversione(c)))
+
+
+# Esercizio 1 - Variante
+
+def temp(c):
+    if type(c) == float or type(c) == int:
+        f = (c * 9/5) + 32
+        return f
+    else:  # cioè se c non è float né int
+        return None
+    
+gc = float(input('Inserire gradi Celsius: '))
+gf = temp(gc)
+print('Gradi Fahrenheit: {}'.format(gf))
+
 >>>
-37.4
-3 gradi Celsius equivalgono a 37.4 gradi Fahrenheit
+Inserire gradi Celsius: 20.5
+Gradi Fahrenheit: 68.9
 >>>
+
+# ------------------------------------------
+
+# Esercizio 2: Scrivi una funzione che prende tre numeri come parametri e restituisce il più grande tra loro
+
+def maggiore(x, y, z):
+    if x == y and y == z and z == x:
+        return 'sono tutti uguali'
+    elif x > y and x > z:
+        return x
+    elif y > x and y > z:
+        return y
+    else:
+        return z
+
+# ---main---
+
+a = 2    # posso chiamare le variabili globali con lo stesso nome delle locali
+b = 5
+c = 1
+
+print(maggiore(a, b, c)) 
+
+>>>
+5
+>>>
+
+# -----------------------------------------
+
+# Esercizio 3: Scrivi una funzione che prenda come parametri le coordinate cartesiane x e y 
+  di due punti e calcoli la distanza tra i due.
+
+from math import *
+
+def distanza(x1, x2, y1, y2):
+    d = sqrt(((x2 - x1)**2) + ((y2 - y1)**2))
+    return d
+
+# ---main---
+
+a1 = 10
+a2 = 3
+b1 = 2
+b2 = 15
+print(distanza(a1, a2, b1, b2))
+
+# ------------------------------------------
+
+# Esercizio 4: Scrivi un programma che, passata come parametro una lista, calcoli e stampi 
+la radice quadrata di tutti gli elementi della lista.
+
+from math import *
+
+def radice_quadrata(lista):
+    for i in lista:      # i lo posso chiamare anche element. Basta che nel print richiamo lo stesso nome
+        print(int(sqrt(i)))   # specifico int se non voglio come risultato numeri con la virgola
+
+# ---main---
+L = [256, 4, 16, 49, 121, 36]
+radice_quadrata(L)
+
+>>>
+16
+2
+4
+7
+11
+6
+>>>
+
+# ------------------------------------------
+
+# Esercizio 5: Date due liste scrivere una funzione che verifichi se i primi elementi delle 
+due liste sono uguali (utilizzare indici della lista).
+
+def dueliste(l1, l2):
+    if l1[0] == l2[0]:
+       return True
+    return False
+
+L1 = [0, 1, 2, 3, 4]
+L2 = [1, 2, 3, 5, 2]
+
+print(dueliste(L1, L2))
+
+>>>
+False
+>>>
+
+# Esercizio 5 - Variante
+
+def dueliste(l1, l2):
+    for el in l1:                # per scorrere tutti gli elementi nella lista
+        for el in l2:
+            if l1[0] == l2[0]:
+               return True
+            return False
+
+L1 = [0, 1, 2, 3, 4]
+L2 = [1, 2, 3, 5, 2]
+
+print(dueliste(L1, L2))
+
+>>>
+False
+>>>
+
+# ------------------------------------------
+
+# Esercizio 6: Scrivi un programma che, passata come parametro una lista di interi, 
+  fornisce in output il maggiore tra i numeri contenuti nella lista.
+
+# creo una variabile vuota maxx dove vengono messi di volta in volta i numeri maggiori che vengono 
+  trovati nella lista. E' una variabile accumulatore di valori massimi, ogni valore max trovato viene messo lì dentro
+
+def maxlist(L): 
+    maxx = 0          
+    for i in L:
+        if i > maxx:   # se i è maggiore del numero che si trova dentro l'accumulatore di valori massimi
+           maxx = i    # allora i va a sostituire il precedente valore massimo dentro l'accumulatore
+    return maxx   
+
+lista = [122, 4, -90, 7788, 3, 1]
+print(maxlist(lista))
+
+>>>
+7788
+>>>
+
+
+
+
+
+
