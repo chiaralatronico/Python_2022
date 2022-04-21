@@ -55,9 +55,11 @@ print('Done!')
 
 # ------------
 
+# stesse operazioni, ma con il modulo pandas
+
 # (inserisco un header manualmente nel file montecristo_point.csv)
 
-# utilizzo il modulo pandas: va importato
+# importo pandas
 # per non scrivere pandas ogni volta gli chiedo di abbreviarlo come pd
 # per richiamare il modulo userò pd
 
@@ -110,6 +112,37 @@ print(my_csv)
 0    1   606879.926249   4.688202e+06   165       213
 (...)
 >>>
+
+# -----------
+
+# creo un nuovo csv con pandas
+# con .to_csv prende il mio csv di partenza e lo mette su un altro csv nella posizione che gli indico
+
+my_csv.to_csv("C:/Lab2_Python/out/montecristo_point_helips_pandas.csv")
+print("Done!")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
