@@ -30,18 +30,23 @@ for element in lista:
 4096
 >>>
 
-# una funzione per contare quante volte un elemento compare in lista
-# la funzione avrà come parametro la lista e il numero
-# creo una variabile contatore che andrà ad incrementarsi ogni volta che il cico for trova un elemento corrispondente
-# per ogni elemento nella lista, se questo elemento è uguale al numero che chiediamo di controllare se è presente più volte, incremenenta il contatore
-# altrimenti pass. Quando esce dal ciclo (ha controllato tutti i numeri) ritorna quante volte il numero è presente nella lista (cioè il contatore)
-# la variabile contatore parte sempre da 0
+# --------------------------
 
-def conta_el(l, n): # parametro: lista, numero
-    c = 0 # contatore
+# una funzione per contare quante volte un elemento compare in lista
+
+# la funzione avrà come parametro la lista e il numero
+# creo una variabile contatore c (che parte sempre da 0, perché deve contare) che andrà ad 
+  incrementarsi ogni volta che il cico for trova un elemento corrispondente
+# per ogni elemento nella lista, se questo elemento è uguale al numero che chiediamo di 
+  controllare se è presente più volte, incremenenta il contatore. Altrimenti pass
+# Quando esce dal ciclo (ha controllato tutti i numeri) return quante volte il numero è 
+  presente nella lista (cioè il contatore)
+
+def conta_el(l, n):      # parametro: lista, numero
+    c = 0                # contatore
     for el in l:
         if el == n:
-            c = c + 1 # incrementa il contatore
+            c = c + 1    # incrementa il contatore
         else:
             pass
     return c
@@ -80,17 +85,19 @@ print(conta_el(lista, num))
 
 #--------------------------------
 
-# il modulo Random permette di lavorare con numeri casuali
 # in una lista vuota con un range di 10 elementi voglio inserire dei numeri casuali da 0 a 500
-# per ogni elemento all'interno di un range di 10, assegno alla varaibile b dei valori da 0 a 500
+# serve il modulo random che permette di lavorare con numeri casuali
+
+# per ogni elemento all'interno di un range di 10, assegno alla variabile b dei valori da 0 a 500
   e li appendo alla lista vuota L
 # quanto esce dal ciclo, cioè sono stati appesi 10 valori, mi stampa la lista
 
+
 from random import *
 def insert_random():
-    L = [] # dichiaro una lista vuota in cui 'appendere' dei valori 
+    L = []                    # dichiaro una lista vuota in cui 'appendere' dei valori 
     for el in range(10):
-        b = randint(0, 500)
+        b = randint(0, 500)   # randint per generare numeri interi casuali entro un range di valori
         L.append(b)
     print(L)
     
@@ -101,15 +108,18 @@ def insert_random():
  >>>
  
 #--------------------------------
- 
+
+# CSV
+
 # importo il modulo csv
+
 import csv
  
-# devo indicare il percorso (come stringa) dove si trova il file csv
-# "C:/Lab2_Python/montecristo_point.csv"
+# serve indicare il percorso (stringa) dove si trova il file csv: "C:/Lab2_Python/montecristo_point.csv"
 # uso la funzione open per aprilo
-# alla nuova variabile assegno il percorso e la modalità con cui viene letto. r sta per read, cioè in sola lettura
- 
+# alla nuova variabile assegno il percorso e la modalità con cui viene letto. 
+  r sta per read, cioè in sola lettura
+
 my_csv = open("C:/Lab2_Python/montecristo_point.csv", 'r')
 
 print(my_csv)  # non apre il file, stampa una codifica
@@ -121,9 +131,8 @@ table = csv.reader(my_csv, delimiter = ',')
 
 print(table)  # mi dice che è un oggetto reader
 
-
 # come entro dentro il csv e stampo ogni riga? Con il cilo for
-# per ogni riga nella tabella, stampa la riga: tutte le righe del csv come fossero liste
+# per ogni riga nella tabella, stampa la riga. Tutte le righe del csv come fossero liste
 
 for row in table:
     print(row)
@@ -145,7 +154,7 @@ for row in table:
 >>>
 
 # le liste sono interrogabili
-# ad esempio se voglio sapere cosa c'è nella posizione 0 della lista, mi stampa 1° colonna
+# ad es., se voglio sapere cosa c'è nella posizione 0 della lista, mi stampa 1° colonna
 
 for row in table:
     print(row[0])
@@ -156,12 +165,13 @@ for row in table:
 26
 >>>
 
-#------
+# ----------
 
-# l'header è l'intestazione: id,coordx,coordy,h
+# l'header è l'intestazione: id, coordx, coordy, h
 # inserisco manualmente l'header nel file csv
 
-# inserisco il metodo DictReader: vede la tabella come dizionario dove la chiave è l'header e i dati i valori
+# uso il metodo DictReader: vede la tabella come dizionario dove la chiave è l'header e i dati i valori
+
 table = csv.DictReader(my_csv, delimiter = ',')
  
 for row in table:
@@ -172,7 +182,7 @@ for row in table:
  (...)
  >>>
  
- # siccome ora le righe vengono lette come dizionario, se voglio stampare un certo indice
+ # siccome ora le righe vengono lette come dizionario, se voglio stampare un certo indice,
    devo specificare la chiave, ad es. la quota 'h'
  
  for row in table:
@@ -192,19 +202,20 @@ for row in table:
 
 # poiché le intestazione dell'header sono diventate chiavi del dizionario, posso eseguire
   delle operazioni, e quindi svincolo gli altri dati del csv dal tipo stringa
+
 # ad es: la coordinata x la moltiplico per 2
 # devo specificare che il numero contenuto nella chiave coordx è di tipo float!!! ( o se è intero, int)
-
+  
  for row in table:
     a = float(row['coordx'])  
     print(a * 2)
 
-#----
+# -------
 
-# come si aggiunge una lista al file csv, come se aggiungessi una lista
+# come si aggiunge una lista al file csv (ad es. l'header)
 
-# creo la variabile header. I titoli devono essere passati come stringhe.
-  L'header è una lista di stringhe
+# creo la variabile header. I titoli devono essere passati come stringhe, perché
+  l'header è una lista di stringhe
 
 header = ['id', 'coord_x', 'coord_y', 'h']
 
@@ -219,9 +230,8 @@ for row in table:
     List.append(row)
 print(List)
 
-
 # creo una nuova variabile per aprile il nuovo file in modalità scrittura (w sta per write)
-# per non sovrascrivere il dato, creo una cartella out dove vorrò il nuovo file
+# per non sovrascrivere il dato, creo una cartella out dove vorrò il nuovo file rinominato
 
 out_csv = open("C:/Lab2_Python/out/montecristo_point_header.csv", 'w')
 
@@ -239,5 +249,7 @@ my_csv.close()
 out_csv.close()
 
 # volendo posso chiedergli stamparmi quando ha fatto la copia...
-# se vado a vedere nella cartella trovo il file nuovo
 print("Done!")
+
+# se vado a vedere nella cartella trovo il file nuovo
+
