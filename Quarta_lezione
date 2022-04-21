@@ -121,28 +121,75 @@ print(my_csv)
 my_csv.to_csv("C:/Lab2_Python/out/montecristo_point_helips_pandas.csv")
 print("Done!")
 
+# -------------------------------
+
+# Console Python su Qgis da aprire con l'icona o ctrl+alt+p
+
+# importo la libreria gdal
+import gdal
+
+# per apire il mio fil raster dem: creo una variabile e le assegno la funzione open e le dò come parametro il percorso 
+my_raster = gdal.Open('D:/Magistrale/2_anno/2_semestre/Lab_2/Python/pianosa_dem.tif')
+
+# come si ottengono i metadati relativi al dato che sto utilizzando
+  (gli stessi che sono leggibili in 'maggiori informazioni' nelle proprietà del raster)
+
+print(my_raster.GetMetadata())
+
+# voglio leggere le info relative alle banda su cui sto lavorando (ho solo la prima banda)
+
+band = my_raster.GetRasterBand(1)
+print(band)
+
+# se voglio sapere che tipo è la mia variabile banda...
+print(type(band))
+
+<class 'osgeo.gdal.Band'>  # mi dice che è una "Band"
+
+# voglio stampare la matrice di valori relativi alla banda del raster
+
+band_values = band.ReadAsArray()   # così leggo come matrice tutti i valori nella banda del raster
+
+print(band_values)
+
+>>>
+[[0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0.]
+ ...
+ [0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0.]]    # vedo solo i valori all'estremità del raster, cioè quota 0 relativa al mare
+ 
+# per leggere la quota in un determinato punto, scrivo il numero del pixel lungo la coordx e lungo la coordy
+
+print(band_values[400, 500])
+
+>>> 6.645758
+
+# vedere le info relative al raster
+
+spatial = my_raster.GetSpatialRef()
+print(spatial)
 
 
+# la geotrasformata (da usare per georeferenziare i dati)
+# una geotrasformazione è una trasformazione dallo spazio delle coordinate dell'immagine 
+  (riga, colonna), noto anche come (pixel, linea), allo spazio delle coordinate georeferenziate 
+  (coordinate proiettate o geografiche). Una geotrasformata consiste in un insieme di 6 coefficienti:
+  
+# GT(0) coordinata x dell'angolo superiore sinistro del pixel superiore sinistro
+  GT(1) w-e risoluzione dei pixel / larghezza dei pixel.
+  GT(2) rotazione delle righe (tipicamente zero).
+  GT(3) coordinata y dell'angolo superiore sinistro del pixel superiore sinistro.
+  GT(4) rotazione delle colonne (tipicamente zero).
+  GT(5) n-s risoluzione pixel / altezza pixel (valore negativo per un'immagine con il nord in alto).
 
+geot = my_raster.GetGeoTransform()
+print(geot)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+>>>
+(585240.0, 10.0, 0.0, 4719330.0, 0.0, -10.0)
 
 
 
