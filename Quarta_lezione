@@ -1,0 +1,117 @@
+# operazioni in lettura sul csv
+
+import csv
+
+# apro il file in lettura
+
+my_data = open("C:/Lab2_Python/montecristo_point.csv", 'r')
+
+# specifico il delimitatore
+
+my_csv = csv.reader(my_data, delimiter = ',') 
+
+# creo una nuova variabile header con l'aggiunta della quota ellissoidica
+
+header = ['id', 'coord_x', 'coord_y', 'h', 'h_elips']
+
+# creo una nuova lista vuota
+# con il ciclo for scorro ogni riga del csv originale
+# creo una nuova variabile h_elips da calcolare con il valore all'interno della terza posizione 
+  della lista (quota ortometrica) + 48 (valore di ondulazione del geoide)
+# la nuova variabile la appendo alla fine della riga
+# la riga la appendo alla super lista nuova
+
+L = []
+for row in my_csv:
+    h_elips = int(row[3]) + 48
+    row.append(h_elips)
+    L.append(row)
+    print(row)      # stampo le nuove righe (liste) con l'aggiunta di h_elips
+
+>>>
+['1', '606879.926248845', '4688202.49859414', '165', 213]
+(...)
+['26', '608809.070287334', '4687246.03222212', '327', 375]
+>>>
+
+# --------------
+
+# Creo un file di output csv (in modalità scrittura)
+# serve aprirne un altro con un nome diverso per non sovrascrivere
+
+out_data = open("C:/Lab2_Python/out/montecristo_point_helips.csv", 'w')
+
+# con la nuova variabile scrivo il file di output specificando il delimitatore
+
+new_csv = csv.writer(out_data, delimiter = ',')
+new_csv.writerow(header)
+new_csv.writerows(L)
+
+# chiudo i dati
+
+my_data.close()
+out_data.close()
+print('Done!')
+
+# ------------
+
+# (inserisco un header manualmente nel file montecristo_point.csv)
+
+# utilizzo il modulo pandas: va importato
+# per non scrivere pandas ogni volta gli chiedo di abbreviarlo come pd
+# per richiamare il modulo userò pd
+
+import pandas as pd
+my_csv = pd.read_csv("C:/Lab2_Python/montecristo_point.csv")
+
+# voglio stampare il tipo di csv
+print(type(my_csv))
+
+>>>
+<class 'pandas.core.frame.DataFrame'>  # mi dice che dentro my_csv c'è un elemento di tipo pandas
+>>>
+
+# vede il file come un DataFrame, cioè dati separati da delimitatori
+
+# il modulo pandas ragiona in modo diverso da csv: ragiona per dataframes e vede già il csv come una tabella
+# pandas non usa ciclo for per stmpare le righe del mio file my_csv
+# posso stampare direttamente
+
+print(my_csv)
+
+>>>
+   id         coordx        coordy    h
+0   1  606879.926249  4.688202e+06  165    # aggiunge, però, una prima colonna con numeri progressivi
+(...)
+>>>
+
+# se voglio stamapre solo il valore relativo alla coord x non devo specificare l'indice
+  numerico come con le liste. Basta scrivere il nome del valore da visualizzare
+
+print(my_csv['coordx']
+
+>>>
+0   606879.926249      # oltre all'id suo, mi stampa solo le coordx
+1   607544.589321
+(...)
+>>>
+
+# utilizzando pandas, calcolo la quota ellissoidica
+# nell'header non c'è il valore h_elips, ma associandoci l'operazione di calcolo della quota pandas lo crea in auomatico
+
+my_csv['h_elips'] = my_csv['h'] + 48
+
+# se io lancio la stampa del mio csv vedrò la nuova colonna relativa alla quota elissodica
+
+print(my_csv)
+
+>>>
+    id          coordx         coordy     h   h_elips
+0    1   606879.926249   4.688202e+06   165       213
+(...)
+>>>
+
+
+
+
+
