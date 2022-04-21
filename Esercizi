@@ -34,7 +34,7 @@ Gradi Fahrenheit: 68.9
 
 # ------------------------------------------
 
-# Esercizio 2: Scrivi una funzione che prende tre numeri come parametri e restituisce il più grande tra loro
+# Es. 2: Scrivi una funzione che prende tre numeri come parametri e restituisce il più grande tra loro
 
 def maggiore(x, y, z):
     if x == y and y == z and z == x:
