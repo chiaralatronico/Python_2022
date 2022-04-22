@@ -1,0 +1,160 @@
+# Es.1: Scrivi una funzione che, dati i valori di ore, minuti e secondi, stampi i secondi totali. 
+
+def secondi_tot(h, m, s):
+    sec_tot = (h * 3600) + (m * 60) + s
+    return sec_tot
+
+# main---
+
+h = 1
+m = 5
+s = 10
+print(secondi_tot(h, m, s))
+
+>>>
+3910
+>>>
+
+# -------------------
+
+Es.2: Scrivi una funzione che prende come parametro una lista_1 di (int o float, a scelta) e 
+      restituisca una nuova lista_2 contenente la radice quadrata dei valori di lista_1.
+
+from math import sqrt
+
+def lista_radq(L):
+    L_nuova = []
+    for el in L:
+        L_nuova.append(sqrt(el))
+    print(L, L_nuova)
+
+L = [256, 100, 9, 25]
+(lista_radq(L))
+
+>>>
+[256, 100, 9, 25] [16.0, 10.0, 3.0, 5.0]
+>>>
+
+# -------------------
+
+Es.3: Scrivi una funzione che prende in input 10 valori interi e li 'appende' ad una lista_1 
+      se sono pari o ad una lista_2 se sono dispari.
+
+def lista():
+    L_pari = []                  # lista di appoggio per numeri pari
+    L_disp = []                  # lista di appoggio per numeri dispari
+    for el in range (10):        # creo un ciclo for che va avanti per 10 volte
+        n = int(input('Inserisci numero: '))
+        if n % 2 == 0:           # con il cilo if valuto se il numero è pari o dispari
+           L_pari.append(n)
+        else:
+           L_disp.append(n)
+    return L_pari, type(L_pari), len(L_pari), L_disp, type(L_disp), len(L_disp)
+
+print(lista())   # oppure scrivo nella shell lista()
+
+>>> 
+Inserisci numero: 5    # inserisco nelle shell dei numeri per 10 volte
+>>>
+
+>>> 
+([2, 4, 6, 6, 6, 34], <class 'list'>, 6, [5, 1, 13, 5], <class 'list'>, 4)
+>>>
+
+# -------------------
+
+Es. 4: Utilizzare il CSV dati_meteo_ostiglia. Utilizzando il modulo csv, aggiungere una nuova 
+       'riga' di header e una nuova 'colonna' contenente il valore di temperatura media, 
+       ricavandolo dalla temperatura minima e della temperatura massima già presenti nel csv.
+
+import csv
+
+temp_csv = open("D:/Magistrale/2_anno/2_semestre/Lab_2/Python/dati_meteo_ostiglia.csv", 'r')
+table_temp = csv.reader(temp_csv, delimiter = ',')
+
+header = ['stazione', 'data', 'temp_min', 'temp_max', 'temp_mean']
+
+L = []
+for row in table_temp:
+    temp_mean = (float(row[2]) + float(row[3])) / 2   # specifico float, altrimenti stringa
+    row.append(temp_mean)
+    L.append(row)
+
+print(row)
+print(L)
+
+out_temp_csv = open("D:/Magistrale/2_anno/2_semestre/Lab_2/Python/dati_meteo_ostiglia_out.csv", 'w')
+new_table_temp = csv.writer(out_temp_csv, delimiter = ',')
+new_table_temp.writerow(header)
+new_table_temp.writerows(L)
+
+temp_csv.close()
+out_temp_csv.close()
+
+print('Done!')
+
+# -------------------
+
+Es. 5: Rifare con pandas
+
+import pandas as pd
+
+# creo la variabile header
+header = ['stazione', 'data', 'temp_min', 'temp_max', 'temp_mean']
+
+# leggo il csv con pandas in quel percorso e specifico che in names c'è l'header, 
+  ossia i nomi delle intestazioni sono riportati nella variabile header
+
+temp_data = pd.read_csv("D:/Magistrale/2_anno/2_semestre/Lab_2/Python/dati_meteo_ostiglia.csv", names = header)
+
+# specifico che il file ha l'header
+
+temp_data.head()
+
+# nella posizione dell'header 'temp_mean' scrivo l'operazione per calcolarla
+
+temp_data['temp_mean'] = (temp_data['temp_min'] + temp_data['temp_max']) / 2
+
+print(temp_data)
+
+>>>
+    stazione        data   temp_min  temp_max   temp_mean
+0   OSTIGLIA  2022-01-01        0.9       3.8        2.35
+(...)
+>>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
