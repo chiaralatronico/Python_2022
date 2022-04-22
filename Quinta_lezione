@@ -1,0 +1,11 @@
+# su Qgis dem e csv
+
+# campionare i valori di quota direttamente dal raster e inserirli nel csv
+
+# usiamo la geotrasformata per trasformare le coordinate metriche nelle coordinate pixel
+  del raster
+  
+import gdal
+import csv
+
+# creo la funzione def sample che ha come parametri il csv originale (lo chiamo table) e il dem
