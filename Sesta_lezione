@@ -1,0 +1,7 @@
+# Prendere il valore di quota dal raster ed inserirlo nelle righe di più csv
+# fare un ciclo dentro una cartella 
+
+# il dem dell'Isola d'Elba è in coordinate geografiche espresse in gradi.
+  E' necessario proiettarlo in coordinate piane (in metri)
+
+# crea degli shp file partendo dai csv
