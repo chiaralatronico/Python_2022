@@ -1,4 +1,4 @@
-# operazioni in lettura sul csv
+# OPERAZIONI CON IL CSV
 
 import csv
 
@@ -10,16 +10,18 @@ my_data = open("C:/Lab2_Python/montecristo_point.csv", 'r')
 
 my_csv = csv.reader(my_data, delimiter = ',') 
 
-# creo una nuova variabile header con l'aggiunta della quota ellissoidica
+# voglio aggiungere al csv la quota ellissoidica che è da calcolare
+# creo una nuova variabile header, dove specifico i nomi dei campi già esistenti,
+  con l'aggiunta della quota ellissoidica
 
 header = ['id', 'coord_x', 'coord_y', 'h', 'h_elips']
 
 # creo una nuova lista vuota
 # con il ciclo for scorro ogni riga del csv originale
-# creo una nuova variabile h_elips da calcolare con il valore all'interno della terza posizione 
-  della lista (quota ortometrica) + 48 (valore di ondulazione del geoide)
-# la nuova variabile la appendo alla fine della riga
-# la riga la appendo alla super lista nuova
+# creo la nuova variabile h_elips: la calcolo con il valore all'interno della terza posizione 
+  della lista (quindi 'h', cioè la quota ortometrica) + 48 (valore di ondulazione del geoide)
+# appendo la nuova variabile alla fine di ogni riga
+# ogni riga la appendo alla super lista 
 
 L = []
 for row in my_csv:
@@ -53,7 +55,7 @@ my_data.close()
 out_data.close()
 print('Done!')
 
-# ------------
+# ---------------
 
 # stesse operazioni, ma con il modulo pandas
 
@@ -75,19 +77,22 @@ print(type(my_csv))
 
 # vede il file come un DataFrame, cioè dati separati da delimitatori
 
-# il modulo pandas ragiona in modo diverso da csv: ragiona per dataframes e vede già il csv come una tabella
+# il modulo pandas ragiona in modo diverso da csv: 
+  ragiona per dataframes e vede il csv come una tabella
 # pandas non usa ciclo for per stmpare le righe del mio file my_csv
 # posso stampare direttamente
 
 print(my_csv)
 
+ # aggiunge, però, una prima colonna (prima dell'id) con numeri progressivi
+
 >>>
-   id         coordx        coordy    h
-0   1  606879.926249  4.688202e+06  165    # aggiunge, però, una prima colonna con numeri progressivi
+     id         coordx         coordy     h
+0     1  606879.926249   4.688202e+06   165   
 (...)
 >>>
 
-# se voglio stamapre solo il valore relativo alla coord x non devo specificare l'indice
+# se voglio stampare solo il valore relativo alla coord x non devo specificare l'indice
   numerico come con le liste. Basta scrivere il nome del valore da visualizzare
 
 print(my_csv['coordx']
@@ -99,11 +104,12 @@ print(my_csv['coordx']
 >>>
 
 # utilizzando pandas, calcolo la quota ellissoidica
-# nell'header non c'è il valore h_elips, ma associandoci l'operazione di calcolo della quota pandas lo crea in auomatico
+# nell'header non c'è il valore h_elips, ma pandas crea tale campo in modo automatico
+  quando ci associo l'operazione di calcolo 
 
 my_csv['h_elips'] = my_csv['h'] + 48
 
-# se io lancio la stampa del mio csv vedrò la nuova colonna relativa alla quota elissodica
+# se lancio la stampa del mio csv vedrò la nuova colonna relativa alla quota elissoidica
 
 print(my_csv)
 
@@ -116,19 +122,22 @@ print(my_csv)
 # -----------
 
 # creo un nuovo csv con pandas
-# con .to_csv prende il mio csv di partenza e lo mette su un altro csv nella posizione che gli indico
+# con  .to_csv  prende il mio csv di partenza e lo mette su un altro csv 
+  nella posizione che gli indico
 
 my_csv.to_csv("C:/Lab2_Python/out/montecristo_point_helips_pandas.csv")
 print("Done!")
 
 # -------------------------------
 
-# Console Python su Qgis da aprire con l'icona o ctrl+alt+p
+# Console Python su Qgis da aprire con l'icona o  ctrl + alt + p
 
 # importo la libreria gdal
 import gdal
 
-# per apire il mio fil raster dem: creo una variabile e le assegno la funzione open e le dò come parametro il percorso 
+# per apire il mio fil raster dem: creo una variabile, le assegno la funzione open 
+  e le dò come parametro il percorso 
+
 my_raster = gdal.Open('D:/Magistrale/2_anno/2_semestre/Lab_2/Python/pianosa_dem.tif')
 
 # come si ottengono i metadati relativi al dato che sto utilizzando
@@ -144,11 +153,14 @@ print(band)
 # se voglio sapere che tipo è la mia variabile banda...
 print(type(band))
 
+>>>
 <class 'osgeo.gdal.Band'>  # mi dice che è una "Band"
+>>>
 
-# voglio stampare la matrice di valori relativi alla banda del raster
+# voglio stampare la matrice contenente i valori di quota relativi alla banda del raster
+# chiedo di leggermi come matrice (array) tutti i valori nella banda del raster
 
-band_values = band.ReadAsArray()   # così leggo come matrice tutti i valori nella banda del raster
+band_values = band.ReadAsArray()   
 
 print(band_values)
 
@@ -159,9 +171,12 @@ print(band_values)
  ...
  [0. 0. 0. 0. 0. 0.]
  [0. 0. 0. 0. 0. 0.]
- [0. 0. 0. 0. 0. 0.]]    # vedo solo i valori all'estremità del raster, cioè quota 0 relativa al mare
+ [0. 0. 0. 0. 0. 0.]]    
  
-# per leggere la quota in un determinato punto, scrivo il numero del pixel lungo la coordx e lungo la coordy
+# vedo solo i valori all'estremità del raster, cioè quota 0 relativa al mare
+ 
+# per leggere la quota in un determinato punto del raster,
+ scrivo il numero del pixel lungo la coordx e lungo la coordy
 
 print(band_values[400, 500])
 
@@ -176,7 +191,8 @@ print(spatial)
 # la geotrasformata (da usare per georeferenziare i dati)
 # una geotrasformazione è una trasformazione dallo spazio delle coordinate dell'immagine 
   (riga, colonna), noto anche come (pixel, linea), allo spazio delle coordinate georeferenziate 
-  (coordinate proiettate o geografiche). Una geotrasformata consiste in un insieme di 6 coefficienti:
+  (coordinate proiettate o geografiche).
+  Una geotrasformata consiste in un insieme di 6 coefficienti:
   
 # GT(0) coordinata x dell'angolo superiore sinistro del pixel superiore sinistro
   GT(1) w-e risoluzione dei pixel / larghezza dei pixel.
@@ -190,7 +206,7 @@ print(geot)
 
 >>>
 (585240.0, 10.0, 0.0, 4719330.0, 0.0, -10.0)
-
+>>>
 
 
 
