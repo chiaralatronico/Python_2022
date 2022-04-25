@@ -105,7 +105,8 @@ header = ['stazione', 'data', 'temp_min', 'temp_max', 'temp_mean']
 # leggo il csv con pandas in quel percorso e specifico che in names c'è l'header, 
   ossia i nomi delle intestazioni sono riportati nella variabile header
 
-temp_data = pd.read_csv("D:/Magistrale/2_anno/2_semestre/Lab_2/Python/dati_meteo_ostiglia.csv", names = header)
+temp_data = pd.read_csv("D:/Magistrale/2_anno/2_semestre/Lab_2/Python/dati_meteo_ostiglia.csv", 
+                                                                                names = header)
 
 # specifico che il file ha l'header
 
