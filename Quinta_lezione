@@ -1,11 +1,242 @@
-# su Qgis dem e csv
+# Su Qgis dem e csv di Pianosa
 
-# campionare i valori di quota direttamente dal raster e inserirli nel csv
+# Campionare i valori di quota direttamente dal raster e inserirli nel csv
 
-# usiamo la geotrasformata per trasformare le coordinate metriche nelle coordinate pixel
-  del raster
+# uso la geotrasformata per trasformare le coordinate metriche nelle coordinate pixel del raster
   
-import gdal
+
+from osgeo import gdal    # con versioni di qgis precedenti: import gdal 
 import csv
 
+# import os
+
+# cambio la directory dei percorsi
+# senza che ogni volta vado a richiamare il path dei file, creo una directory
+# cioè una cartella che contiene i file su cui sto lavorando che va specificata nello script
+# in questo modo posso richiamare solo il nome del file e non l'intero percorso
+
+# creo una directory, il percorso della cartella in cui ho tutti i dati
+# os.chdir("D:/Magistrale/2_anno/2_semestre/Lab_2/Python")
+
+# path pianosa raster: ("D:/Magistrale/2_anno/2_semestre/Lab_2/Python/pianosa_dem.tif")
+# path painosa points: ("D:/Magistrale/2_anno/2_semestre/Lab_2/Python/points_pianosa.csv")
+
 # creo la funzione def sample che ha come parametri il csv originale (lo chiamo table) e il dem
+
+def sample(table, raster):
+    data = gdal.Open(raster)     # apro il raster
+    band = data.GetRasterBand(1) # creo la variabile band a cui assegno la banda 1 del raster
+    band_arr = band.ReadAsArray  # dico di leggermi la banda come un array, cioè una matrice
+    gt = data.GetGeoTransform()  # alla var gt assegno la geotrasform. per calcolare le coord raster 
+    my_csv = open(table, 'r')    # apro il csv (lo chiamo table) in modalità lettura
+    punti = csv.reader(my_csv, delimiter = ',')  # creo il reader per leggere tutti i valori nel csv
+    header = ['id', 'nome', 'stato', 'coordx', 'coordy', 'quota']    # creo l'header  
+    lista = []     # creo la superlista a cui appendere tutte le righe del csv
+    
+    for row in punti:
+        coordx = float(row[3])  # assegno i valori delle coordinate
+        coordy = float(row[4])
+      
+# devo dirgli di prendere il valore sulla coordinata pixel del raster
+
+# caclolo le coordinate raster px e py 
+# la coord raster px è la coordx meno il valore nella posizione 0 della geotrasformata, 
+  diviso il valore della geotrasform della risoluzione del pixel 
+# idem per py
+
+        px = int((coordx - gt[0]) / gt[1])
+        py = int((coordy - gt[3]) / gt[5])
+        
+        # andare a leggere il valore di quota sul raster relativo alle coord px e py
+        
+        quota = band_arr(py, px)
+        
+        # alla riga del csv vado ad appendere quel valore di quota
+        
+        row.append(quota)
+        
+        # alla superlista vado ad appendere tutta la riga contenente i valori più il valore di quota
+        
+        lista.append(row)
+
+# creo un csv di output
+
+    new_csv = open("D:/Magistrale/2_anno/2_semestre/Lab_2/Python/out/points_pianosa_out.csv", 'w')
+    writer = csv.writer(new_csv, delimiter = ',')
+    writer.writerow(header)
+    writer.writerows(lista)
+
+# il raster si chiude con None, assegnando un valore nullo alla variabile data
+    data = None
+
+# poi chiudo il csv di input e di output
+    my_csv.close()
+    new_csv.close()
+
+# main
+
+# richiamo la funzione e inserisco i percorsi di csv e raster come parametri
+
+# con il modulo os posso mettere solo i nomi dei file e non l'intero percorso
+sample("D:/Magistrale/2_anno/2_semestre/Lab_2/Python/points_pianosa.csv", 
+           "D:/Magistrale/2_anno/2_semestre/Lab_2/Python/pianosa_dem.tif") 
+print('Done')
+
+
+# se apro il file vedo aggiunto il valore di quota che ha preso dalla banda 1 del raster 
+
+
+# ----------------------------------
+
+
+# stessa cosa usando dictreader cioè leggere ogni riga del csv come dizionario
+
+# il dizionario è comodo perché permette di richiamare un valore dalla sua chiave, 
+  senza dover specificare un indice numerico
+# una chiave corrisponde al nome dell'header
+# ogni elemento del dizionario è formato da una chiave e un valore, quindi per richiamre 
+  quel valore si usa la chiave
+
+from osgeo import gdal 
+import csv
+import os
+
+os.chdir("D:/Magistrale/2_anno/2_semestre/Lab_2/Python/")
+
+# sempre stessa funzione sample con tre parametri:
+# tabella è il csv originale, il secondo è il raster di pianosa su cui campionare i valori di quota, 
+  il terzo è csv_out, cioè il csv che viene creato in uscita
+
+def sample_dict(tabella, raster, csv_out):
+    data = gdal.Open(raster)     # apro il raster
+    band = data.GetRasterBand(1) # assegno la banda 1 del raster
+    gt = data.GetGeoTransform()  # geotrasformata
+    
+    my_csv = open(tabella, 'r')  # apro il csv in lettura
+    punti = csv.DictReader(my_csv, delimiter = ',') 
+    
+    # con dictreader ogni riga è vista come dizionario e non come lista
+    
+    # creo la variabile header in cui assegno la lista contenente tutti i valori dell'header
+    
+    header = ['id', 'luogo', 'stato', 'xcoord', 'ycoord', 'quota']
+    
+    # super lista per appendere tutte le righe
+    
+    lista = []
+    
+    # per ogni riga nel csv (punti) definisco una list row vuota 
+    # sono liste di accumulo, qui verranno appesi tutti i valori
+    # ogni riga non è più una lista, ma un dizionario
+    # devo trasformare il dizionario in lista e poi posso aggiungere la quota
+    
+    for row in punti:
+        list_row = []
+        xcoord = float(row['xcoord'])  # invece che richiamare il valore delle coord tramite 
+        ycoord = float(row['ycoord'])    l'indice numerico della lsita, uso la chiave del dizionario
+        
+        # calcolo le coord px e py del raster
+        px = int((xcoord - gt[0]) / gt[1])
+        py = int((ycoord - gt[3]) / gt[5])
+        
+        # creo la var quota in cui leggere il valore della coord pixel sulla banda letta come array
+        # scritto in modo avanzato: 1 e 1 significa che per ogni coord prende un solo valore
+        # a questa quota, per queste coordinate, verrà assegnato il valore campionato sul raster
+        quota = float(band.ReadAsArray(px, py, 1, 1))
+        
+        # ricopiamo il vecchio csv nel nuovo csv aggiungendo il valore di quota
+        # alla lista vuota list_row aggiungo (appendo) i valori
+        # poi tutte queste liste le va ciclicamente ad appendere alla superlista
+        list_row.append(row['id'])
+        list_row.append(row['luogo'])
+        list_row.append(row['stato'])
+        list_row.append(row['xcoord'])
+        list_row.append(row['ycoord'])
+        list_row.append(quota)
+        lista.append(list_row)
+    
+    # fuori dal ciclo
+    
+    # creo una nuova variabile di output che la apre in scrittura
+    
+    new_csv = open(csv_out, 'w')
+    writer = csv.writer(new_csv, delimiter = ',')
+    
+    # aggiungo come prima riga da scrivere l'header
+
+    writer.writerow(header)
+    
+    # gli faccio scrivere tutte le righe della superlista
+
+    writer.writerows(lista)
+    
+    # chiudo raster, csv di input e di output
+
+    data = None
+    my_csv.close()
+    new_csv.close()
+
+# richiamo la funzione
+# come primo parametro il csv originale, il secondo il dem, il terzo è il nome di csv di output
+sample_dict('points_pianosa.csv', 'pianosa_dem.tif', 'pianosa_point_dict.csv')
+print("Done!")
+
+
+#-------------------
+
+# variante
+
+from osgeo import gdal
+import csv
+import os
+
+def sample_dict_2(tabella, raster):
+    data = gdal.Open(raster) 
+    band = data.GetRasterBand(1) 
+    gt = data.GetGeoTransform() 
+    
+    my_csv = open(tabella, 'r') 
+    punti = csv.DictReader(my_csv, delimiter = ',')
+    
+    header = ['id', 'luogo', 'stato', 'xcoord', 'ycoord', 'quota']
+    
+    
+    lista = []
+   
+    
+    for row in punti:
+        list_row = []
+        xcoord = float(row['xcoord']) 
+        ycoord = float(row['ycoord'])
+        px = int((xcoord - gt[0]) / gt[1])
+        py = int((ycoord - gt[3]) / gt[5])
+        quota = float(band.ReadAsArray(px, py, 1, 1)
+        
+        list_row.append(row['id'])
+        list_row.append(row['luogo'])
+        list_row.append(row['stato'])
+        list_row.append(row['xcoord'])
+        list_row.append(row['ycoord'])
+        list_row.append(quota)
+        lista.append(list_row)
+        
+    # fuori ciclo
+    
+    # creo una variabile new_name
+    # tabella la legge come una stringa (quindi come se fosse 'points_pianosa.csv') 
+    # con split divido in due la stringa nel punto (.) e prende della parte divisa 
+      solo la prima [0], ossia 'points_painosa'
+    # con il + aggiungo (concateno) una nuova stringa ('_quote2.csv')
+
+    new_name = tabella.split('.')[0] + '_quote2.csv'
+    new_csv = open(new_name, 'w')
+    writer = csv.writer(new_name, delimiter = ',')
+    writer.writerow(header)
+    writer.writerows(lista)
+    
+    data = None
+    my_csv.close()
+    new_csv.close()
+    
+    sample_dict_2('points_pianosa.csv', 'pianosa_dem.tif')
+    print("Done!")
