@@ -26,7 +26,7 @@ import csv
 def sample(table, raster):
     data = gdal.Open(raster)     # apro il raster
     band = data.GetRasterBand(1) # creo la variabile band a cui assegno la banda 1 del raster
-    band_arr = band.ReadAsArray  # dico di leggermi la banda come un array, cioè una matrice
+    band_arr = band.ReadAsArray()  # dico di leggermi la banda come un array, cioè una matrice
     gt = data.GetGeoTransform()  # alla var gt assegno la geotrasform. per calcolare le coord raster 
     my_csv = open(table, 'r')    # apro il csv (lo chiamo table) in modalità lettura
     punti = csv.reader(my_csv, delimiter = ',')  # creo il reader per leggere tutti i valori nel csv
@@ -49,7 +49,7 @@ def sample(table, raster):
         
         # andare a leggere il valore di quota sul raster relativo alle coord px e py
         
-        quota = band_arr(py, px)
+        quota = band_arr[py, px]
         
         # alla riga del csv vado ad appendere quel valore di quota
         
@@ -190,6 +190,8 @@ from osgeo import gdal
 import csv
 import os
 
+os.chdir("D:/Magistrale/2_anno/2_semestre/Lab_2/Python/")
+
 def sample_dict_2(tabella, raster):
     data = gdal.Open(raster) 
     band = data.GetRasterBand(1) 
@@ -210,7 +212,7 @@ def sample_dict_2(tabella, raster):
         ycoord = float(row['ycoord'])
         px = int((xcoord - gt[0]) / gt[1])
         py = int((ycoord - gt[3]) / gt[5])
-        quota = float(band.ReadAsArray(px, py, 1, 1)
+        quota = float(band.ReadAsArray(px, py, 1, 1))
         
         list_row.append(row['id'])
         list_row.append(row['luogo'])
@@ -230,7 +232,7 @@ def sample_dict_2(tabella, raster):
 
     new_name = tabella.split('.')[0] + '_quote2.csv'
     new_csv = open(new_name, 'w')
-    writer = csv.writer(new_name, delimiter = ',')
+    writer = csv.writer(new_csv, delimiter = ',')
     writer.writerow(header)
     writer.writerows(lista)
     
@@ -238,5 +240,5 @@ def sample_dict_2(tabella, raster):
     my_csv.close()
     new_csv.close()
     
-    sample_dict_2('points_pianosa.csv', 'pianosa_dem.tif')
-    print("Done!")
+sample_dict_2('points_pianosa.csv', 'pianosa_dem.tif')
+print("Done!")
