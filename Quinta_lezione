@@ -91,6 +91,9 @@ print('Done')
 
 # stessa cosa usando dictreader cioè leggere ogni riga del csv come dizionario
 
+# quando si usa dictreader bisogna usare, però, il file csv in cui si inserisce
+  manualmente l'header!!!!!!!!
+
 # il dizionario è comodo perché permette di richiamare un valore dalla sua chiave, 
   senza dover specificare un indice numerico
 # una chiave corrisponde al nome dell'header
@@ -178,7 +181,7 @@ def sample_dict(tabella, raster, csv_out):
 
 # richiamo la funzione
 # come primo parametro il csv originale, il secondo il dem, il terzo è il nome di csv di output
-sample_dict('points_pianosa.csv', 'pianosa_dem.tif', 'pianosa_point_dict.csv')
+sample_dict('points_pianosa_header.csv', 'pianosa_dem.tif', 'pianosa_point_dict.csv')
 print("Done!")
 
 
@@ -240,5 +243,5 @@ def sample_dict_2(tabella, raster):
     my_csv.close()
     new_csv.close()
     
-sample_dict_2('points_pianosa.csv', 'pianosa_dem.tif')
+sample_dict_2('points_pianosa_header.csv', 'pianosa_dem.tif')
 print("Done!")
