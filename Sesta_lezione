@@ -1,7 +1,230 @@
 # Prendere il valore di quota dal raster ed inserirlo nelle righe di più csv
-# fare un ciclo dentro una cartella 
+# Fare un ciclo dentro una cartella 
 
-# il dem dell'Isola d'Elba è in coordinate geografiche espresse in gradi.
+# Il dem dell'Isola d'Elba è in coordinate geografiche espresse in gradi.
   E' necessario proiettarlo in coordinate piane (in metri)
 
-# crea degli shp file partendo dai csv
+# Crea degli shp file partendo dai csv
+
+
+# Importo i moduli. csv e gadal servono per i raster e csv; os serve per
+  comunicare con il nostro sistema operativo e utilizzarlo per creare una directory 
+  con chdir in cui specificare il percorso di tutti i file di cui ho bisogno
+# il modulo glob serve alla fine: permette di eseguire dei cicli fot all'interno
+  di alcuni elementi (i csv) all'interno della directory 
+  
+import csv
+import gdal
+import os
+import glob
+
+os.chdir('D:/Magistrale/2_anno/2_semestre/Lab_2/Python/Lezione_6')
+
+# definisco la funzione sample che ha come parametri il csv (uno dei comuni dell'elba) 
+  e il raster dem dell'elba
+# leggo ogni riga del csv come dizionario
+
+def sample(csv_file, raster):
+    csvfile_read = open(csv_file, 'r')
+    reader = csv.DictReader(csvfile_read, delimiter = ',')
+    
+# apro il raster
+# all'interno della variabile gt ho una tupla, cioè un insieme ordinato di elementi non
+  modificabile (a differenza della lista che, invece, è modificabile)
+# i valori della gt li prendo dal dem
+# del dem voglio la banda, che è unica e contiene i valori di quota
+
+    dem = gdal.Open(raster)
+    gt = dem.GetGeoTransform()
+    band = dem.GetRasterBand(1)
+    # print(gt)  # volendo, vedo i valori di gt che sono in gradi
+
+# vado a settare i campi dell'output. 
+# L'header è già presente nei file csv!!! 
+
+    header = ['fid','full_id','osm_id','osm_type','name','natural','xcoord','ycoord','quota']
+    
+# creo una superlista vuota in cui appendere tutte le righe del csv. 
+# poi apro il ciclo. per tutte le righe in reader (cioè il csv) apro una nuova mini-lista 
+  che si chiama list_row 
+# creo due variabili nuove, utm_x e utm_y in cui assegno il valore che si trova all'interno 
+  delle due voci del dizionario xcoord e ycoord 
+    
+    lista = []
+    for row in reader:
+        list_row = []
+        utm_x = float(row['xcoord'])
+        utm_y = float(row['ycoord'])
+        px = int((utm_x-gt[0])/gt[1])  
+        py = int((utm_y-gt[3])/gt[5])
+        # print(px, py) # valori strani: 2946, 1050
+        
+# vado a campionare la quota. vado a prendere il valore che sta sulla banda 1 letta come array
+# prendo un valore per coordinata raster e me lo restituisce in float
+        
+        quota = band.ReadAsArray(px,py,1,1)
+        q = float(quota)
+        #print(q, type(q))
+        # 1) perché non funziona? 
+        # vedere SR...
+        
+# alla lista creata all'interno del ciclo appendo tutti i campi che corrispondono 
+  alle chiavi del dizionario
+# appende alla mini-lista tutti gli elementi della prima riga del csv
+# e ad ogni ciclo si scorre tutte le righe del csv e aggiunge tutte le righe
+# poi appendo i valori di quota
+# infine appendo tutto alla super lista: lista di liste
+
+        list_row.append(row['fid'])
+        list_row.append(row['full_id'])
+        list_row.append(row['osm_id'])
+        list_row.append(row['osm_type'])
+        list_row.append(row['name'])
+        list_row.append(row['natural'])
+        list_row.append(row['xcoord'])
+        list_row.append(row['ycoord'])
+        list_row.append(q)
+        lista.append(list_row)
+        
+# esco dal ciclo!!!
+# split per creare il nome del file di output        
+
+    name = csv_file.split('.')[0] + '_quota.csv'
+    csvfile_write = open(name,'w') 
+    writer = csv.writer(csvfile_write)
+    writer.writerow(header) 
+    writer.writerows(lista)
+
+    csvfile_read.close()
+    csvfile_write.close()
+ 
+#- - - - - main - - - -  
+
+# per aggiungere la quota (ovviamente in metri) serve riproiettare il dem 
+# fuori dalla funzione, con il comando gdal.Warp inserisco il nome del raster di output 
+  che sarà riproiettato, il nome del raster di input, e la destinazione del SR (dstSRS)
+  cioè il codice epsg per specificare l'SR utm
+# poi lo commento solo dopo averlo fatto una volta, se no ogni volta mi riproietta il file
+
+gdal.Warp('elba_dem_utm.tif', 'elba_dem.tif', dstSRS = 'EPSG:32632')
+
+# richiamo la funzione per un solo csv (quello di capoliveri)
+# poi la commento, altrimenti con il ciclo su tutta la cartella avrò due files su capoliveri
+
+sample('capoliveri.csv', 'elba_dem_utm.tif')
+
+# utilizzo tutti i file csv per campionare il raster 
+# importo il modulo glob (import glob): permette di eseguire dei cicli fot all'interno
+  di alcuni elementi (i csv) all'interno della directory
+# per tutti i file csv nella directory che hanno csv nel nome invoco
+  la funzione sample sul raster. (glob.glob è nome del modulo e nome del metodo) 
+
+for csv_file in glob.glob('*.csv'):
+    sample(csv_file, 'elba_dem_utm.tif')
+print('Reprojected!')
+
+
+
+
+# leggere il valore sul csv sul raster e creare lo shapefile
+
+import csv
+import os
+import gdal
+import ogr # viene usata x gestione dati vettoriali
+import osr # viene usato per la gestione dei sistemi di riferimento
+
+os.chdir('C:/lab2_python/lezione_6')
+
+# apro csv
+my_csv = open('rio_nell_elba.csv', 'r')
+reader = csv.DictReader(my_csv, delimiter = ',')
+
+# andiamo a ciclare su ogni colonna e dirgli di leggere il 
+# valore sul raster 
+# apriamo il raster:
+raster = gdal.Open('elba_dem_utm.tif') # apro raster
+
+#per andare a leggere il valore devo avere la geotrasformata...
+
+gt = raster.GetGeoTransform() #questa è la geotrasformata
+band = raster.GetRasterBand(1) # è la banda 1 del raster
+
+# gli andiamo ad aggiungere la nuova colonna e poi creiamo lo shapefile...
+
+# apro shapefile, lo inizializzo 
+driver = ogr.GetDriverByName('ESRI Shapefile') # ESRI è l'azienda 
+
+# creo il data source...
+# gli dico di inserirlo nella cartella di lavoro
+
+data_source = driver.CreateDataSource('rio_nell_elba_shape.shp')
+
+# creo il SR spaziale
+srs = osr.SpatialReference() # Preparo la variabile a ricevere le info relative al SR
+srs.ImportFromEPSG(32632) # così gli importo il SR da assegnare allo shp
+# gli devo specificare il codice EPSG (il nostro utm zona 32N)
+
+# creo il layer
+layer = data_source.CreateLayer('rio_nell_elba_shape', srs, ogr.wkbPoint) 
+# wkbPoint -> linguaggio di scrittura delle geometrie
+# nome, sistema di riferimento e tipologia di geometria (ossia puntuale)
+# srs è la variabile creata prima, nella quale sono state aggiunte le info SR...
+
+# adesso creo i campi dello shapefile
+field_name = ogr.FieldDefn('name', ogr.OFTString) #OFTString è il formato del campo
+field_name.SetWidth(100) # lunghezza del campo 100 caratteri 
+# sul layer gli dico di creare il campo che ho definito
+layer.CreateField(field_name)
+# i prossimi sono interi quindi non dovrò definire la width
+layer.CreateField(ogr.FieldDefn('xcoord', ogr.OFTReal))
+layer.CreateField(ogr.FieldDefn('ycoord', ogr.OFTReal))
+layer.CreateField(ogr.FieldDefn('quota', ogr.OFTReal))
+# per ora mi crea solo le intestazioni... sono 4 campi...
+# QUINDIIII gli vado a dire di riempire i cambi con dei valori
+# valori che vado a prendere dal csv! Fa il ciclo sul csv
+for row in reader: # per ogni riga del csv...
+        list_row = [] # creo le liste...
+        utm_x = float(row['xcoord'])  # prende i valori di coordinate x e y
+        utm_y = float(row['ycoord'])
+        px = int((utm_x-gt[0])/gt[1]) # da coord cart in coord raster
+        py = int((utm_y-gt[3])/gt[5])
+        quota = band.ReadAsArray(px,py,1,1) # estraggo la quota
+        q = float(quota)
+        
+        # creo il mio attributo (come elemento nel layer)
+        feature = ogr.Feature(layer.GetLayerDefn())
+        # all'attributo assegno un campo
+        feature.SetField('name', row['name']) # così setto il valore del primo campo
+        # dentro name ci sarà il valore che si trova sotto la colonna di indice 'name' del csv!
+        feature.SetField('xcoord', row['xcoord']) # a questo campo aggiungi il valore che trovi alla chiave 'xcoord' nel csv
+        feature.SetField('ycoord', row['ycoord']) # idem...
+        feature.SetField('quota', q)
+        # al campo quota assegno 'q', ossia il valore di quota campionato dal raster.
+        
+        # in questo modo ho creato i miei campi
+        # ma ancora non ho creato niente...
+        # perché ho solo creato i nomi, non ho aggiunto niente
+        # non gli ho ancora detto che feature voglio
+        
+        # vado a definire la geometria...
+        
+        # ...crea la geometria punto da quella stringa
+        wkt = 'POINT(%f %f)'%(float(row['xcoord']), float(row['ycoord']))
+        
+        point = ogr.CreateGeometryFromWkt(wkt)
+        # crea la geometria punto dalla stringa wkt 
+        # crea la geom punto e setta il valore della geometria sul mio elemento
+        #print(wkt) # wkt è la definizione del punto in linguaggio wkt 
+        feature.SetGeometry(point) # definisce la geometria della feature
+        # creo la feature sui campi con quella geometria
+        layer.CreateFeature(feature) 
+        # letteralmente creo la feature con quella geometria e quei rispettivi campi...
+        # crea la feature all'interno del layer!!!!
+        # come al solito devo chiuedere tutto...
+        feature = None # chiudo la feature (nel ciclo)
+
+# fuori dal ciclo...
+data_source = None # chiudo il datasource
+
+print('Done!')
