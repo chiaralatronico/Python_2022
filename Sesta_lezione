@@ -14,7 +14,7 @@
   di alcuni elementi (i csv) all'interno della directory 
   
 import csv
-import gdal
+from osgeo import gdal
 import os
 import glob
 
@@ -123,108 +123,165 @@ for csv_file in glob.glob('*.csv'):
     sample(csv_file, 'elba_dem_utm.tif')
 print('Reprojected!')
 
+# ---------------------------------------------------------------------------------------
 
-
-
+# come creare degli shp file (e gli altri file relativi) partendo dai csv che ho già
 # leggere il valore sul csv sul raster e creare lo shapefile
+# ogni shp file avrà i rispettivi campi contenuti nei csv
 
 import csv
 import os
-import gdal
-import ogr # viene usata x gestione dati vettoriali
-import osr # viene usato per la gestione dei sistemi di riferimento
+from osgeo import gdal
+from osgeo import ogr       # il modulo ogr viene usato per la gestione dati vettoriali
+from osgeo import osr       # il modulo osr viene usato per la gestione dei SR
 
-os.chdir('C:/lab2_python/lezione_6')
+os.chdir('D:/Magistrale/2_anno/2_semestre/Lab_2/Python/Lezione_6')
 
-# apro csv
+# apro un csv in lettura
+
 my_csv = open('rio_nell_elba.csv', 'r')
 reader = csv.DictReader(my_csv, delimiter = ',')
 
-# andiamo a ciclare su ogni colonna e dirgli di leggere il 
-# valore sul raster 
-# apriamo il raster:
-raster = gdal.Open('elba_dem_utm.tif') # apro raster
+# andiamo a ciclare su ogni colonna e a dirgli di leggere il valore sul raster 
+# apriamo il raster riproiettato
 
-#per andare a leggere il valore devo avere la geotrasformata...
+raster = gdal.Open('elba_dem_utm.tif') 
 
-gt = raster.GetGeoTransform() #questa è la geotrasformata
-band = raster.GetRasterBand(1) # è la banda 1 del raster
+# per andare a leggere il valore devo avere la geotrasformata
+
+gt = raster.GetGeoTransform()
+band = raster.GetRasterBand(1) 
 
 # gli andiamo ad aggiungere la nuova colonna e poi creiamo lo shapefile...
 
-# apro shapefile, lo inizializzo 
-driver = ogr.GetDriverByName('ESRI Shapefile') # ESRI è l'azienda 
+# apro lo shapefile, lo inizializzo, creando una nuova variabile driver
+# utilizzando il modulo ogr richiamo il metodo .GetDriverByName che prende come parametro
+  il nome del tipo di file vettoriale da creare, cioè un ESRI shpfile 
 
-# creo il data source...
-# gli dico di inserirlo nella cartella di lavoro
+driver = ogr.GetDriverByName('ESRI Shapefile') 
+
+# creo il data source, cioè letteralmente lo shp file, specificando il nome che avrà
+# praticamente gli dico di inserirlo nella cartella di lavoro
 
 data_source = driver.CreateDataSource('rio_nell_elba_shape.shp')
 
-# creo il SR spaziale
-srs = osr.SpatialReference() # Preparo la variabile a ricevere le info relative al SR
-srs.ImportFromEPSG(32632) # così gli importo il SR da assegnare allo shp
-# gli devo specificare il codice EPSG (il nostro utm zona 32N)
+# devo creare il SR spaziale. Creo una variabile a cui assegnarlo
+# tramite osr.SpatialReference preparo la variabile a ricevere le info del SR
 
-# creo il layer
+srs = osr.SpatialReference() 
+
+# ora gli importo il SR da assegnare allo shp
+# gli devo specificare il codice EPSG (il nostro è utm zona 32N)
+
+srs.ImportFromEPSG(32632) 
+
+# creo il layer del futuro shp
+# ha come parametri il nome dello shp file, il SR, e la tipologia di geometria (è puntuale)
+# wkbPoint è il linguaggio di scrittura delle geometrie
+
 layer = data_source.CreateLayer('rio_nell_elba_shape', srs, ogr.wkbPoint) 
-# wkbPoint -> linguaggio di scrittura delle geometrie
-# nome, sistema di riferimento e tipologia di geometria (ossia puntuale)
-# srs è la variabile creata prima, nella quale sono state aggiunte le info SR...
 
-# adesso creo i campi dello shapefile
-field_name = ogr.FieldDefn('name', ogr.OFTString) #OFTString è il formato del campo
-field_name.SetWidth(100) # lunghezza del campo 100 caratteri 
-# sul layer gli dico di creare il campo che ho definito
+# adesso dopo aver creato il layer, creo i campi dello shapefile
+# tralascio i primi campi del csv perché non li voglio nello shp (fid, full_ide ecc)
+
+# vado a definire il campo 'name' e gli dico che, tramite il modulo ogr, 
+  questo campo è di tipo stringa
+
+field_name = ogr.FieldDefn('name', ogr.OFTString)
+
+# poiché è di tipo stringa, gli devo specificare la lunghezza
+# a field_name gli devo settare la Width, con una lunghezza del campo stringa di 100 caratteri
+
+field_name.SetWidth(100)   
+
+# nel layer che ho creato gli dico di creare il campo che ho definito
+
 layer.CreateField(field_name)
-# i prossimi sono interi quindi non dovrò definire la width
+
+# i prossimi sono campi con numeri interi quindi non dovrò definire 
+  la width (neanche se sono float)
+# per i numeri serve ogr.OFTReal per dirgli che è un numero reale
+# li creo tutti in un unico passaggio
+
 layer.CreateField(ogr.FieldDefn('xcoord', ogr.OFTReal))
 layer.CreateField(ogr.FieldDefn('ycoord', ogr.OFTReal))
 layer.CreateField(ogr.FieldDefn('quota', ogr.OFTReal))
-# per ora mi crea solo le intestazioni... sono 4 campi...
-# QUINDIIII gli vado a dire di riempire i cambi con dei valori
-# valori che vado a prendere dal csv! Fa il ciclo sul csv
-for row in reader: # per ogni riga del csv...
+
+# per ora mi crea solo le intestazioni. Sono 4 campi: name, xcoord, ycoord e quota
+
+# quindi gli vado a dire di riempire tali campi con i valori contenuti nel csv
+# ciclo sul csv
+
+for row in reader:                          # per ogni riga del csv...
         list_row = [] # creo le liste...
-        utm_x = float(row['xcoord'])  # prende i valori di coordinate x e y
+        utm_x = float(row['xcoord'])        # prende i valori di coordinate x e y
         utm_y = float(row['ycoord'])
-        px = int((utm_x-gt[0])/gt[1]) # da coord cart in coord raster
+        px = int((utm_x-gt[0])/gt[1])       # da coord cart in coord raster
         py = int((utm_y-gt[3])/gt[5])
         quota = band.ReadAsArray(px,py,1,1) # estraggo la quota
         q = float(quota)
         
-        # creo il mio attributo (come elemento nel layer)
+        # ora devo creare l'attributo (come elemento nel layer)
+        # gli dico che la variabile feature è l'attributo del layer che è stato definito 
+       
         feature = ogr.Feature(layer.GetLayerDefn())
-        # all'attributo assegno un campo
-        feature.SetField('name', row['name']) # così setto il valore del primo campo
-        # dentro name ci sarà il valore che si trova sotto la colonna di indice 'name' del csv!
-        feature.SetField('xcoord', row['xcoord']) # a questo campo aggiungi il valore che trovi alla chiave 'xcoord' nel csv
-        feature.SetField('ycoord', row['ycoord']) # idem...
-        feature.SetField('quota', q)
-        # al campo quota assegno 'q', ossia il valore di quota campionato dal raster.
+       
+        # all'attributo creato assegno un campo
+        # al campo che ha nome 'name' gli assegno il valore contenuto nella chiave 
+          del dizionario 'name'
+        # dentro name ci sarà il valore che si trova sotto la colonna di indice 'name' del csv
+        
+        feature.SetField('name', row['name'])     
+        
+        # vado a settare gli altri campi
+        # al campo 'xcoord' aggiunge il valore che trova alla chiave 'xcoord' nel csv. 
+          E così via
+   
+        feature.SetField('xcoord', row['xcoord']) 
+        feature.SetField('ycoord', row['ycoord']) 
+        
+        # la quota, però, non è presente nel csv per cui al posto di row['...'], 
+          metto la variabile q che mi sono calcolata prima
+        # al campo quota assegno 'q', ossia il valore di quota campionato dal raster
+        
+        feature.SetField('quota', q)       
         
         # in questo modo ho creato i miei campi
-        # ma ancora non ho creato niente...
+        # ma ancora non ho creato lo shp file fisico
         # perché ho solo creato i nomi, non ho aggiunto niente
         # non gli ho ancora detto che feature voglio
         
-        # vado a definire la geometria...
+        # vado a definire la geometria
         
-        # ...crea la geometria punto da quella stringa
+        # creo una variabile wkt che sarebbe la geometria punto 
+        # %f %f significa che dopo il % mi scrive quello che gli definisco (cioè float...)
+        
         wkt = 'POINT(%f %f)'%(float(row['xcoord']), float(row['ycoord']))
         
-        point = ogr.CreateGeometryFromWkt(wkt)
-        # crea la geometria punto dalla stringa wkt 
-        # crea la geom punto e setta il valore della geometria sul mio elemento
-        #print(wkt) # wkt è la definizione del punto in linguaggio wkt 
-        feature.SetGeometry(point) # definisce la geometria della feature
+        # tramite il modulo ogr crea la geometria punto dalla stringa wkt
+        # crea la geometria punto e setta il valore della geometria sul mio elemento
+        # print(wkt) # wkt è la definizione del punto in linguaggio wkt 
+        
+        point = ogr.CreateGeometryFromWkt(wkt)       
+    
+        # definisco la geometria della feature, cioè puntuale 
+        
+        feature.SetGeometry(point)  
+        
         # creo la feature sui campi con quella geometria
+        
         layer.CreateFeature(feature) 
+       
         # letteralmente creo la feature con quella geometria e quei rispettivi campi...
         # crea la feature all'interno del layer!!!!
+        
         # come al solito devo chiuedere tutto...
-        feature = None # chiudo la feature (nel ciclo)
+        # chiudo la feature (nel ciclo)
+        
+        feature = None 
 
-# fuori dal ciclo...
-data_source = None # chiudo il datasource
+# fuori dal ciclo chiudo il datasource
+
+data_source = None 
 
 print('Done!')
